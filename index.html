@@ -340,6 +340,11 @@
         }
         .controls > *:hover { color: rgba(255, 200, 200, 0.9); }
 
+        /* مؤشر تحميل الموسيقى */
+        .music-status {
+            font-size: 0.7rem;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
@@ -359,7 +364,7 @@
                 ليه القلوب الطيبة دايماً بتدفع التمن؟<br>
                 وليه الروح بتفضل متعلقة بحد مبقاش موجود؟"
             </div>
-            <button class="btn-ghost" onclick="nextScreen()">.. افتح </button>
+            <button class="btn-ghost" id="startJourneyBtn">.. افتح</button>
         </div>
     </div>
 
@@ -390,7 +395,7 @@
                 <div class="person person2" id="person2Emoji">💔</div>
             </div>
             <div class="distance-text" id="distanceText">المسافة بعيدة.. بس القلب أقرب من حبل الوريد</div>
-            <button class="btn-ghost" onclick="nextScreen()">البعد بيموتني</button>
+            <button class="btn-ghost" onclick="nextScreen()">البعد </button>
         </div>
     </div>
 
@@ -401,7 +406,7 @@
             </div>
             <input type="range" class="slider" id="shoqSlider" min="0" max="100" value="90">
             <div class="shoq-value" id="shoqValue">90% 💔</div>
-            <button class="btn-ghost" onclick="nextScreen()">مش قادر أتحمل أكتر</button>
+            <button class="btn-ghost" onclick="nextScreen()">كفايا</button>
         </div>
     </div>
 
@@ -433,9 +438,135 @@
 </div>
 
 <script>
-    const screensContainer = document.getElementById('screensContainer');
+    // ======================== الموسيقى ========================
+    // إنشاء كائنات الصوت (ملفات الأغاني - يتم تحميلها عند التفاعل)
+    let journeyMusic = null;  // موسيقى الرحلة (تبدأ عند الضغط على ابدأ)
+    let endingMusic = null;   // موسيقى النهاية (تبدأ عند الوصول للشاشة الأخيرة)
+    let isMusicEnabled = true;
+    let hasStarted = false;
+    let endingMusicStarted = false;
     let currentIndex = 0;
     let userName = '';
+
+    // تهيئة الموسيقى (يتم إنشاؤها فقط عند الحاجة لتجاوز قيود المتصفح)
+    function initJourneyMusic() {
+        if (!journeyMusic) {
+            // استخدام ملفات الأغاني الفعلية - يرجى وضع المسار الصحيح لملف الأغنية
+            journeyMusic = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+            journeyMusic.loop = true;
+            journeyMusic.volume = 0.35;
+            journeyMusic.preload = 'auto';
+        }
+        return journeyMusic;
+    }
+
+    function initEndingMusic() {
+        if (!endingMusic) {
+            endingMusic = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3');
+            endingMusic.loop = true;
+            endingMusic.volume = 0.4;
+            endingMusic.preload = 'auto';
+        }
+        return endingMusic;
+    }
+
+    // بدء موسيقى الرحلة مع تأثير التلاشي
+    function startJourneyMusic() {
+        if (!isMusicEnabled) return;
+        const music = initJourneyMusic();
+        music.volume = 0;
+        music.play().then(() => {
+            // تلاشي للداخل
+            let vol = 0;
+            const fadeIn = setInterval(() => {
+                if (vol < 0.35 && music.volume < 0.35) {
+                    vol += 0.02;
+                    music.volume = Math.min(vol, 0.35);
+                } else {
+                    clearInterval(fadeIn);
+                }
+            }, 100);
+        }).catch(e => console.log("الموسيقى تحتاج تفاعل أول:", e));
+    }
+
+    // إيقاف موسيقى الرحلة مع تلاشي
+    function fadeOutJourneyMusic(callback) {
+        if (!journeyMusic) { if(callback) callback(); return; }
+        const music = journeyMusic;
+        const fadeOut = setInterval(() => {
+            if (music.volume > 0.05) {
+                music.volume = Math.max(0, music.volume - 0.03);
+            } else {
+                clearInterval(fadeOut);
+                music.pause();
+                if (callback) callback();
+            }
+        }, 80);
+    }
+
+    // بدء موسيقى النهاية مع تلاشي للداخل
+    function startEndingMusic() {
+        if (!isMusicEnabled || endingMusicStarted) return;
+        endingMusicStarted = true;
+
+        // أولاً إيقاف موسيقى الرحلة بهدوء
+        fadeOutJourneyMusic(() => {
+            const ending = initEndingMusic();
+            ending.volume = 0;
+            ending.currentTime = 0;
+            ending.play().then(() => {
+                let vol = 0;
+                const fadeIn = setInterval(() => {
+                    if (vol < 0.4 && ending.volume < 0.4) {
+                        vol += 0.02;
+                        ending.volume = Math.min(vol, 0.4);
+                    } else {
+                        clearInterval(fadeIn);
+                    }
+                }, 100);
+            }).catch(e => console.log("تشغيل أغنية النهاية:", e));
+        });
+    }
+
+    // إيقاف كل الموسيقى
+    function stopAllMusic() {
+        if (journeyMusic) {
+            journeyMusic.pause();
+            journeyMusic.volume = 0.35;
+        }
+        if (endingMusic) {
+            endingMusic.pause();
+            endingMusic.volume = 0.4;
+        }
+        endingMusicStarted = false;
+    }
+
+    // تبديل حالة الموسيقى (كتم/تشغيل)
+    function toggleMusic() {
+        isMusicEnabled = !isMusicEnabled;
+        const toggleBtn = document.getElementById('musicToggle');
+
+        if (!isMusicEnabled) {
+            // كتم الصوت
+            if (journeyMusic) journeyMusic.volume = 0;
+            if (endingMusic) endingMusic.volume = 0;
+            toggleBtn.innerHTML = '🔇 كتم الأنين';
+        } else {
+            // إعادة الصوت حسب السياق
+            if (journeyMusic && !endingMusicStarted && currentIndex < 6) {
+                journeyMusic.volume = 0.35;
+                if (journeyMusic.paused) journeyMusic.play().catch(e=>{});
+            }
+            if (endingMusic && endingMusicStarted) {
+                endingMusic.volume = 0.4;
+                if (endingMusic.paused) endingMusic.play().catch(e=>{});
+            }
+            toggleBtn.innerHTML = '🎵 تشغيل الأنين';
+        }
+    }
+
+    // ======================== التحكم في الصفحات ========================
+    const screensContainer = document.getElementById('screensContainer');
 
     function nextScreen() {
         if (currentIndex < 6) {
@@ -446,8 +577,12 @@
             const titles = ['💔 الغصة', '🎶 أنين', '👤 الساكن', '📏 المسافة', '🔥 الاحتراق', '📜 الوداع', '🥀 النهاية'];
             document.getElementById('progress').innerText = titles[currentIndex];
 
-            // زيادة كثافة الدموع كلما تقدمنا
             createAshes(currentIndex * 2);
+
+            // إذا وصلنا لشاشة النهاية (آخر شاشة)
+            if (currentIndex === 6) {
+                startEndingMusic();
+            }
         }
     }
 
@@ -462,7 +597,7 @@
             lines.forEach((id, i) => {
                 setTimeout(() => {
                     document.getElementById(id).classList.add('visible');
-                }, (i + 1) * 2000); // إظهار الكلمات ببطء شديد يثير الشجن
+                }, (i + 1) * 2000);
             });
             setTimeout(() => {
                 document.getElementById('btnTo3').style.opacity = '1';
@@ -478,7 +613,7 @@
                 if (dist > 15) {
                     dist -= 1;
                     p2.style.right = dist + '%';
-                    distText.innerText = `حتى لو بيننا ${dist}% من الغياب.. روحك بتطوف حواليا يا ${userName}`;
+                    distText.innerText = `حتى لو بيننا ${Math.floor(dist)}% من الغياب.. روحك بتطوف حواليا يا ${userName}`;
                 } else {
                     clearInterval(shrink);
                     distText.innerHTML = `المسافات كدبة.. أنت محفور جوايا.`;
@@ -490,11 +625,13 @@
     // تحديث شريط الشوق
     const slider = document.getElementById('shoqSlider');
     const valText = document.getElementById('shoqValue');
-    slider.addEventListener('input', (e) => {
-        let val = e.target.value;
-        let icon = val > 80 ? '🔥' : val > 50 ? '💔' : '🥀';
-        valText.innerText = `${val}% ${icon}`;
-    });
+    if (slider) {
+        slider.addEventListener('input', (e) => {
+            let val = e.target.value;
+            let icon = val > 80 ? '🔥' : val > 50 ? '💔' : '🥀';
+            valText.innerText = `${val}% ${icon}`;
+        });
+    }
 
     // توليد رسالة الوجع
     function generateSadCard() {
@@ -516,7 +653,7 @@
             const tear = document.createElement('div');
             tear.className = 'tear-drop';
             tear.style.left = Math.random() * window.innerWidth + 'px';
-            tear.style.animationDuration = (Math.random() * 2 + 2) + 's'; // سقوط بطيء
+            tear.style.animationDuration = (Math.random() * 2 + 2) + 's';
             tear.style.opacity = Math.random() * 0.5 + 0.1;
             document.body.appendChild(tear);
             setTimeout(() => tear.remove(), 4000);
@@ -536,16 +673,34 @@
         }
     }
 
-    // تشغيل الموسيقى الوهمي (تعتمد على الملفات المحلية لديك)
-    let isMusicPlaying = false;
-    document.getElementById('musicToggle').addEventListener('click', function() {
-        isMusicPlaying = !isMusicPlaying;
-        this.innerText = isMusicPlaying ? '🔇 إيقاف الأنين' : '🎵 تشغيل الأنين';
-        // هنا يمكنك ربط الـ Audio Objects الخاصة بك كما كانت في الكود الأصلي
+    // بدء الرحلة عند الضغط على زر "افتح"
+    document.getElementById('startJourneyBtn').addEventListener('click', () => {
+        if (!hasStarted) {
+            hasStarted = true;
+            startJourneyMusic();  // تشغيل موسيقى الرحلة
+        }
+        nextScreen();  // الانتقال للصفحة التالية
     });
+
+    // زر التحكم في الموسيقى
+    document.getElementById('musicToggle').addEventListener('click', toggleMusic);
 
     // تهيئة الصفحة
     createTears();
+
+    // إضافة إعادة تشغيل تلقائي للموسيقى إذا توقفت (ميزة إضافية)
+    setInterval(() => {
+        if (isMusicEnabled && hasStarted && !endingMusicStarted && currentIndex < 6 && currentIndex > 0) {
+            if (journeyMusic && journeyMusic.paused) {
+                journeyMusic.play().catch(e => {});
+            }
+        }
+        if (isMusicEnabled && endingMusicStarted && currentIndex === 6) {
+            if (endingMusic && endingMusic.paused) {
+                endingMusic.play().catch(e => {});
+            }
+        }
+    }, 3000);
 </script>
 </body>
 </html>
