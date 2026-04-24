@@ -1,15 +1,12 @@
-تم تعديل الكود بالكامل ليكون **متجاوباً بالكامل (Fully Responsive)** مع جميع أحجام الشاشات، سواء كانت هواتف (بأحجامها المختلفة) أو أجهزة لوحية أو حواسيب. كما تم تحسين الخطوط، الهوامش، والأبعاد لتظهر بشكل مثالي دون تشوهات أو قص للمحتوى.
-
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>شايفك رغم البعد | حكاية قلب لا ينسى</title>
-    
+    <title>شايفك رغم البعد | حكاية قلب لا تنسى</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <style>
         * {
             margin: 0;
@@ -23,75 +20,44 @@
             background: #000;
             overflow-x: hidden;
             min-height: 100vh;
+            /* منع التمرير غير المرغوب فيه أثناء الانتقال */
+            position: relative;
         }
 
-        /* دموع حزينة متجاوبة */
-        .tear-drop {
-            position: fixed;
-            width: 2px;
-            height: 14px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(100,150,255,0.3), rgba(255,255,255,0));
-            top: -10px;
-            animation: fall linear infinite;
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
-        }
-
-        .floating-heart {
-            position: fixed;
-            font-size: 20px;
-            pointer-events: none;
-            z-index: 9999;
-            animation: floatUp 4s ease-out forwards;
-            filter: drop-shadow(0 0 8px rgba(255,80,80,0.8));
-        }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) scale(0) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) scale(1.3) rotate(25deg);
-                opacity: 0;
-            }
-        }
-
-        /* نبض الحزن */
-        @keyframes sadPulse {
-            0% { opacity: 0.6; text-shadow: 0 0 5px rgba(255,100,100,0.3);}
-            100% { opacity: 1; text-shadow: 0 0 20px rgba(255,80,120,0.7);}
-        }
-
-        .screen {
-            position: fixed;
-            top: 0;
-            left: 0;
+        /* حاوية الصفحات مع تمرير سلس عمودي */
+        .screens-container {
+            position: relative;
             width: 100%;
-            height: 100vh;
+            min-height: 100vh;
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* كل صفحة تأخذ ارتفاع كامل الشاشة مع تمرير محتوى داخلي آمن */
+        .screen {
+            width: 100%;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: all 1.2s cubic-bezier(0.77, 0, 0.18, 1);
-            opacity: 0;
-            visibility: hidden;
-            z-index: 10;
+            position: relative;
             overflow-y: auto;
-            padding: 20px;
+            overflow-x: hidden;
+            padding: 80px 20px;
+            /* إضافة مسافة أمان للمحتوى */
+            scrollbar-width: thin;
         }
 
-        .screen.active {
-            opacity: 1;
-            visibility: visible;
-            z-index: 20;
+        /* تخصيص شريط التمرير */
+        .screen::-webkit-scrollbar {
+            width: 4px;
+        }
+        .screen::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        .screen::-webkit-scrollbar-thumb {
+            background: rgba(255,100,100,0.4);
+            border-radius: 10px;
         }
 
         /* حاوية المحتوى لتوسيط مرن */
@@ -106,11 +72,16 @@
             justify-content: center;
         }
 
-        /* صفحة البداية */
-        .start-screen {
-            background: radial-gradient(circle at 30% 40%, #0a0a1a, #000000);
-            position: relative;
-        }
+        /* خلفيات الصفحات */
+        .start-screen { background: radial-gradient(circle at 30% 40%, #0a0a1a, #000000); }
+        .lyrics-screen { background: linear-gradient(135deg, #0a0005, #000000); }
+        .name-screen { background: linear-gradient(180deg, #050005, #0a0515); }
+        .distance-screen { background: radial-gradient(ellipse at center, #0a0315, #000000); }
+        .shoq-screen { background: linear-gradient(135deg, #0a0005, #1a0005); }
+        .message-screen { background: linear-gradient(135deg, #0a0310, #000000); }
+        .ending-screen { background: radial-gradient(circle at center, #1a0005, #000000); position: relative; overflow: hidden; }
+
+        /* ديكورات الصفحات */
         .start-screen::before {
             content: '';
             position: absolute;
@@ -119,7 +90,32 @@
             background: repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 8px);
             pointer-events: none;
         }
+        .lyrics-screen::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.4) 0px, rgba(0,0,0,0.4) 1px, transparent 1px, transparent 4px);
+            pointer-events: none;
+        }
+        .ending-screen::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: repeating-radial-gradient(circle at 20% 30%, rgba(255,80,100,0.03) 0px, rgba(255,80,100,0.03) 1px, transparent 1px, transparent 8px);
+            animation: slowDrift 20s linear infinite;
+            pointer-events: none;
+        }
 
+        @keyframes slowDrift {
+            0% { transform: translate(0,0);}
+            100% { transform: translate(-10%, -10%);}
+        }
+
+        /* النصوص والعناصر */
         .quote {
             font-size: clamp(1.3rem, 6vw, 2rem);
             color: rgba(255,245,245,0.85);
@@ -132,29 +128,10 @@
             z-index: 2;
             padding: 0 15px;
         }
-        
-        /* صفحة الكلمات */
-        .lyrics-screen {
-            background: linear-gradient(135deg, #0a0005, #000000);
-            position: relative;
-        }
-        .lyrics-screen::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.4) 0px, rgba(0,0,0,0.4) 1px, transparent 1px, transparent 4px);
-            pointer-events: none;
-        }
 
-        .lyrics-container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: center;
-            padding: 20px;
+        @keyframes sadPulse {
+            0% { opacity: 0.6; text-shadow: 0 0 5px rgba(255,100,100,0.3);}
+            100% { opacity: 1; text-shadow: 0 0 20px rgba(255,80,120,0.7);}
         }
 
         .lyric-line {
@@ -170,6 +147,7 @@
             position: relative;
             z-index: 2;
             padding: 0 10px;
+            text-align: center;
         }
 
         .lyric-line.visible {
@@ -177,11 +155,6 @@
             filter: blur(0);
             transform: translateY(0) scale(1);
             text-shadow: 0 0 30px rgba(255,80,100,0.7);
-        }
-
-        /* صفحة الاسم */
-        .name-screen {
-            background: linear-gradient(180deg, #050005, #0a0515);
         }
 
         .question {
@@ -192,7 +165,7 @@
             animation: softPulse 2s infinite;
             padding: 0 15px;
         }
-        
+
         @keyframes softPulse {
             0% { opacity: 0.7; text-shadow: 0 0 0px; }
             100% { opacity: 1; text-shadow: 0 0 15px rgba(255,150,150,0.5);}
@@ -214,11 +187,6 @@
         .name-input:focus {
             border-bottom-color: rgba(255,100,100,0.8);
             outline: none;
-        }
-
-        /* صفحة المسافة */
-        .distance-screen {
-            background: radial-gradient(ellipse at center, #0a0315, #000000);
         }
 
         .people-visual {
@@ -259,11 +227,6 @@
             padding: 15px;
         }
 
-        /* صفحة الشوق */
-        .shoq-screen {
-            background: linear-gradient(135deg, #0a0005, #1a0005);
-        }
-
         .slider {
             width: 90%;
             max-width: 400px;
@@ -290,11 +253,6 @@
             color: #ffbbbb;
             margin-top: 20px;
             font-weight: bold;
-        }
-
-        /* صفحة الرسالة */
-        .message-screen {
-            background: linear-gradient(135deg, #0a0310, #000000);
         }
 
         .message-input {
@@ -336,26 +294,6 @@
             to { opacity: 1; transform: scale(1) translateY(0);}
         }
 
-        /* النهاية */
-        .ending-screen {
-            background: radial-gradient(circle at center, #1a0005, #000000);
-            position: relative;
-            overflow: hidden;
-        }
-        .ending-screen::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: repeating-radial-gradient(circle at 20% 30%, rgba(255,80,100,0.03) 0px, rgba(255,80,100,0.03) 1px, transparent 1px, transparent 8px);
-            animation: slowDrift 20s linear infinite;
-            pointer-events: none;
-        }
-        @keyframes slowDrift {
-            0% { transform: translate(0,0);}
-            100% { transform: translate(-10%, -10%);}
-        }
-
         .final-quote {
             font-size: clamp(1.4rem, 6vw, 2.3rem);
             color: white;
@@ -369,6 +307,7 @@
             z-index: 2;
             padding: 20px;
         }
+
         @keyframes finalPulseIntense {
             0% { transform: scale(1); text-shadow: 0 0 20px #ff4466; opacity: 0.9;}
             50% { transform: scale(1.05); text-shadow: 0 0 50px #ff6688; opacity: 1;}
@@ -416,22 +355,49 @@
         .music-control { right: 10px; }
         .progress-indicator { left: 10px; }
 
-        /* تأثير ضباب */
-        .sad-mist {
+        /* دموع حزينة متجاوبة */
+        .tear-drop {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            width: 2px;
+            height: 14px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(100,150,255,0.3), rgba(255,255,255,0));
+            top: -10px;
+            animation: fall linear infinite;
             pointer-events: none;
-            background: radial-gradient(ellipse at center, rgba(0,0,30,0.15) 0%, rgba(0,0,0,0.4) 100%);
-            z-index: 5;
+            z-index: 9999;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        .floating-heart {
+            position: fixed;
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 9999;
+            animation: floatUp 4s ease-out forwards;
+            filter: drop-shadow(0 0 8px rgba(255,80,80,0.8));
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.3) rotate(25deg);
+                opacity: 0;
+            }
         }
 
         /* تحسينات للأجهزة الصغيرة جداً */
         @media (max-width: 480px) {
             .screen {
-                padding: 15px;
+                padding: 60px 15px;
             }
             .person {
                 width: 65px;
@@ -465,225 +431,180 @@
 </head>
 <body>
 
-<div class="sad-mist"></div>
+<div class="sad-mist" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; background:radial-gradient(ellipse at center, rgba(0,0,30,0.15) 0%, rgba(0,0,0,0.4) 100%); z-index:5;"></div>
 <div class="progress-indicator" id="progress">💔 حكاية قلب حزين</div>
 <button class="music-control" id="musicToggle">🎵 حنين وذكريات</button>
 
-<!-- الصفحة 1: نداء الحزن -->
-<div class="screen start-screen active" id="screen1">
-    <div class="content-container">
-        <div class="quote">
-            💔<br>
-            "سألت نفسي ألف مرة...<br>
-            ليه الحب الجميل لازم يتبهدل؟<br>
-            ليه القلوب الطيبة بتتعب كده؟"<br>
-            <span style="font-size: 0.9rem; opacity: 0.7;">أنا عارف إنك تعبان... تعالي نفهم سوا</span>
+<!-- حاوية الصفحات المتتالية عمودياً -->
+<div class="screens-container" id="screensContainer">
+    <!-- الصفحة 1: نداء الحزن -->
+    <div class="screen start-screen" id="screen1">
+        <div class="content-container">
+            <div class="quote">
+                💔<br>
+                "سألت نفسي ألف مرة...<br>
+                ليه الحب الجميل لازم يتبهدل؟<br>
+                ليه القلوب الطيبة بتتعب كده؟"<br>
+                <span style="font-size: 0.9rem; opacity: 0.7;">أنا عارف إنك تعبان... تعالي نفهم سوا</span>
+            </div>
+            <button class="start-btn" id="startBtn">🕯️ افتح قلبك معايا 🕯️</button>
         </div>
-        <button class="start-btn" id="startBtn">🕯️ افتح قلبك معايا 🕯️</button>
     </div>
-</div>
 
-<!-- الصفحة 2: كلمات -->
-<div class="screen lyrics-screen" id="screen2">
-    <div class="lyrics-container">
-        <div class="lyric-line" id="line1">"تايه في الأماكن اللي كنا فيها... بتوه أكتر"</div>
-        <div class="lyric-line" id="line2">"ناس بتمشي وانت ساكن جوة القلب... مش قادر تطلع"</div>
-        <div class="lyric-line" id="line3">"أه بعيد عن عيني لكن... شايفك بعيون الروح"</div>
-        <div class="lyric-line" id="line4">"لسه شايفك عندي... أغلى من كل الدنيا"</div>
-        <button class="next-btn" id="nextBtn2">💔 كمّل معايا... أنا جنبك</button>
+    <!-- الصفحة 2: كلمات -->
+    <div class="screen lyrics-screen" id="screen2">
+        <div class="lyrics-container" style="width:100%; max-width:600px; margin:0 auto; text-align:center; padding:20px;">
+            <div class="lyric-line" id="line1">"تايه في الأماكن اللي كنا فيها... بتوه أكتر"</div>
+            <div class="lyric-line" id="line2">"ناس بتمشي وانت ساكن جوة القلب... مش قادر تطلع"</div>
+            <div class="lyric-line" id="line3">"أه بعيد عن عيني لكن... شايفك بعيون الروح"</div>
+            <div class="lyric-line" id="line4">"لسه شايفك عندي... أغلى من كل الدنيا"</div>
+            <button class="next-btn" id="nextBtn2">💔 كمّل معايا... أنا جنبك</button>
+        </div>
     </div>
-</div>
 
-<!-- الصفحة 3: الاسم -->
-<div class="screen name-screen" id="screen3">
-    <div class="content-container">
-        <div class="question">
-            💭<br>
-            خليني أقرب ليك شوية...<br>مين الشخص اللي لسه عايش جوا قلبك؟
+    <!-- الصفحة 3: الاسم -->
+    <div class="screen name-screen" id="screen3">
+        <div class="content-container">
+            <div class="question">
+                💭<br>
+                خليني أقرب ليك شوية...<br>مين الشخص اللي لسه عايش جوا قلبك؟
+            </div>
+            <input type="text" class="name-input" id="personName" placeholder="اكتب اسمه/اسمها بهدوء..." autocomplete="off">
+            <button class="next-btn" id="nextBtn3" style="margin-top: 35px;">🤍 فاهم... أهو أكيد فاكرك 🤍</button>
         </div>
-        <input type="text" class="name-input" id="personName" placeholder="اكتب اسمه/اسمها بهدوء..." autocomplete="off">
-        <button class="next-btn" id="nextBtn3" style="margin-top: 35px;">🤍 فاهم... أهو أكيد فاكرك 🤍</button>
     </div>
-</div>
 
-<!-- الصفحة 4: البعد -->
-<div class="screen distance-screen" id="screen4">
-    <div class="content-container">
-        <div class="people-visual">
-            <div class="person person1">👤<br><span style="font-size: 12px;">أنا اللي بحب</span></div>
-            <div class="person person2" id="person2Emoji">💔<br><span style="font-size: 12px;" id="personNameDisplay">?</span></div>
+    <!-- الصفحة 4: البعد -->
+    <div class="screen distance-screen" id="screen4">
+        <div class="content-container">
+            <div class="people-visual">
+                <div class="person person1">👤<br><span style="font-size: 12px;">أنا اللي بحب</span></div>
+                <div class="person person2" id="person2Emoji">💔<br><span style="font-size: 12px;" id="personNameDisplay">?</span></div>
+            </div>
+            <div class="distance-text" id="distanceText"></div>
+            <button class="next-btn" id="nextBtn4" style="margin-top: 15px;">📏 قد إيه البعد موجع؟</button>
         </div>
-        <div class="distance-text" id="distanceText"></div>
-        <button class="next-btn" id="nextBtn4" style="margin-top: 15px;">📏 قد إيه البعد موجع؟</button>
     </div>
-</div>
 
-<!-- الصفحة 5: الشوق -->
-<div class="screen shoq-screen" id="screen5">
-    <div class="content-container">
-        <div class="question">
-            🔥<br>
-            خليني أحس بيك أكتر...<br>نار الشوق وصلت لفين جواك؟
+    <!-- الصفحة 5: الشوق -->
+    <div class="screen shoq-screen" id="screen5">
+        <div class="content-container">
+            <div class="question">
+                🔥<br>
+                خليني أحس بيك أكتر...<br>نار الشوق وصلت لفين جواك؟
+            </div>
+            <input type="range" class="slider" id="shoqSlider" min="0" max="100" value="96">
+            <div class="shoq-value" id="shoqValue">96% 😭💔</div>
+            <button class="next-btn" id="nextBtn5" style="margin-top: 30px;">🌋 أنا حاسس بيك... صدقني</button>
         </div>
-        <input type="range" class="slider" id="shoqSlider" min="0" max="100" value="96">
-        <div class="shoq-value" id="shoqValue">96% 😭💔</div>
-        <button class="next-btn" id="nextBtn5" style="margin-top: 30px;">🌋 أنا حاسس بيك... صدقني</button>
     </div>
-</div>
 
-<!-- الصفحة 6: الرسالة -->
-<div class="screen message-screen" id="screen6">
-    <div class="content-container">
-        <div class="question">
-            💌<br>
-            دلوقتي... إكتب كل اللي جواك<br>لو سمعك دلوقتي، تحب تقول له إيه؟
+    <!-- الصفحة 6: الرسالة -->
+    <div class="screen message-screen" id="screen6">
+        <div class="content-container">
+            <div class="question">
+                💌<br>
+                دلوقتي... إكتب كل اللي جواك<br>لو سمعك دلوقتي، تحب تقول له إيه؟
+            </div>
+            <textarea class="message-input" id="userMessage" rows="4" placeholder="اكتب الكلام اللي محدش سألك عليه... أنا هنا عشانك... عشان أسمعك وافهمك..."></textarea>
+            <button class="next-btn" id="generateCardBtn">💫 خلي كلامك يتكتب في نور وذكرى 💫</button>
+            <div class="card-preview" id="cardPreview">
+                <div id="cardContent" style="color: white; text-align: center;"></div>
+                <button id="shareBtn" class="next-btn" style="margin-top: 20px; background: rgba(255,100,100,0.25);">📤 شارك رسالتك</button>
+            </div>
+            <button class="next-btn" id="nextBtn6" style="margin-top: 20px; display: none;">💞 خلصنا الرحلة</button>
         </div>
-        <textarea class="message-input" id="userMessage" rows="4" placeholder="اكتب الكلام اللي محدش سألك عليه... أنا هنا عشانك... عشان أسمعك وافهمك..."></textarea>
-        <button class="next-btn" id="generateCardBtn">💫 خلي كلامك يتكتب في نور وذكرى 💫</button>
-        <div class="card-preview" id="cardPreview">
-            <div id="cardContent" style="color: white; text-align: center;"></div>
-            <button id="shareBtn" class="next-btn" style="margin-top: 20px; background: rgba(255,100,100,0.25);">📤 شارك رسالتك</button>
-        </div>
-        <button class="next-btn" id="nextBtn6" style="margin-top: 20px; display: none;">💞 خلصنا الرحلة</button>
     </div>
-</div>
 
-<!-- الصفحة 7: النهاية -->
-<div class="screen ending-screen" id="screen7">
-    <div class="content-container">
-        <div class="final-quote">
-            "شايفك...<br>
-            مش بعيني... بشوفك بقلبي<br>
-            والحب الحقيقي... عمره ما بيموت"<br>
-            <span style="font-size: 0.9rem; display: block; margin-top: 20px; opacity: 0.9;">💔 أنا هفضل هنا... فاكرك في كل تفصيلة 💔</span>
+    <!-- الصفحة 7: النهاية -->
+    <div class="screen ending-screen" id="screen7">
+        <div class="content-container">
+            <div class="final-quote">
+                "شايفك...<br>
+                مش بعيني... بشوفك بقلبي<br>
+                والحب الحقيقي... عمره ما بيموت"<br>
+                <span style="font-size: 0.9rem; display: block; margin-top: 20px; opacity: 0.9;">💔 أنا هفضل هنا... فاكرك في كل تفصيلة 💔</span>
+            </div>
+            <button class="restart-btn" id="restartBtn">🔄 ارجع أبدأ الحكاية من الأول</button>
         </div>
-        <button class="restart-btn" id="restartBtn">🔄 ارجع أبدأ الحكاية من الأول</button>
     </div>
 </div>
 
 <script>
-    // دموع متجاوبة مع الشاشة
-    function createTears() {
-        setInterval(() => {
-            if (document.querySelector('.screen.active')) {
-                for(let i=0;i<2;i++){
-                    const tear = document.createElement('div');
-                    tear.className = 'tear-drop';
-                    tear.style.left = Math.random() * window.innerWidth + 'px';
-                    tear.style.animationDuration = Math.random() * 2.5 + 1.2 + 's';
-                    tear.style.opacity = Math.random() * 0.6 + 0.2;
-                    tear.style.width = (Math.random() * 2 + 1) + 'px';
-                    document.body.appendChild(tear);
-                    setTimeout(() => tear.remove(), 4000);
-                }
-            }
-        }, 500);
-    }
+    // العناصر
+    const screensContainer = document.getElementById('screensContainer');
+    const screens = document.querySelectorAll('.screen');
+    let currentIndex = 0;
+    let isTransitioning = false;
 
-    function createHeartBurst(count=1){
-        for(let i=0;i<count;i++){
-            const heart = document.createElement('div');
-            heart.className = 'floating-heart';
-            const hearts = ['❤️', '💔', '💕', '💗', '💖', '💝', '💓', '🫀', '❤️‍🔥', '💘'];
-            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
-            heart.style.left = Math.random() * window.innerWidth + 'px';
-            heart.style.fontSize = (Math.random() * 25 + 18) + 'px';
-            heart.style.animationDuration = Math.random() * 4 + 2.8 + 's';
-            heart.style.filter = `drop-shadow(0 0 8px rgba(255,80,80,0.7))`;
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 4800);
-        }
-    }
-
-    createTears();
-
-    // إعداد الموسيقى
-    const journeyMusic = new Audio('WhatsApp Audio 2026-04-25 at 12.56.59 AM.mpeg');
-    journeyMusic.loop = true;
-    journeyMusic.volume = 0.32;
-    
-    const endingMusic = new Audio('WhatsApp Audio 2026-04-25 at 12.59.41 AM.mpeg');
-    endingMusic.loop = true;
-    endingMusic.volume = 0.0;
-    
-    let musicEnabled = true;
-    let userName = '';
-    let currentStep = 1;
-    let distanceAnimPlaying = false;
-    let endingStarted = false;
-    
-    function startJourneyMusic() {
-        if(musicEnabled) {
-            journeyMusic.play().catch(e => console.log('انتظر التفاعل'));
-        }
-    }
-    
-    function startEndingMusicTransition() {
-        if(!musicEnabled || endingStarted) return;
-        endingStarted = true;
+    // دالة التمرير إلى صفحة معينة (بالتمرير العمودي)
+    function scrollToScreen(index) {
+        if (isTransitioning) return;
+        if (index < 0 || index >= screens.length) return;
+        isTransitioning = true;
         
-        let fadeOutInterval = setInterval(() => {
-            if(journeyMusic.volume > 0.05) {
-                journeyMusic.volume = Math.max(0, journeyMusic.volume - 0.03);
-            } else {
-                journeyMusic.pause();
-                journeyMusic.volume = 0.32;
-                clearInterval(fadeOutInterval);
-            }
-        }, 150);
+        const targetScreen = screens[index];
+        targetScreen.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
         
-        endingMusic.volume = 0;
-        endingMusic.play().catch(e => console.log);
-        let fadeInInterval = setInterval(() => {
-            if(endingMusic.volume < 0.42) {
-                endingMusic.volume = Math.min(0.42, endingMusic.volume + 0.04);
-            } else {
-                clearInterval(fadeInInterval);
-            }
-        }, 120);
-    }
-    
-    function stopAllMusic() {
-        journeyMusic.pause();
-        endingMusic.pause();
-        journeyMusic.volume = 0.32;
-        endingMusic.volume = 0;
-        endingStarted = false;
+        // تحديث الحالة بعد الانتهاء من التمرير
+        setTimeout(() => {
+            currentIndex = index;
+            updateProgressText(currentIndex);
+            // تشغيل التأثيرات الخاصة بكل صفحة عند الوصول إليها
+            triggerScreenEffects(currentIndex);
+            isTransitioning = false;
+        }, 800);
     }
 
-    function showStep(step) {
-        for(let i = 1; i <= 7; i++) {
-            const el = document.getElementById(`screen${i}`);
-            if(el) {
-                if(i === step) {
-                    el.classList.add('active');
-                    if(step === 2) startLyricsAnimation();
-                    if(step === 4 && !distanceAnimPlaying) startDistanceAnimation();
-                    if(step === 5) startShoqEffects();
-                    if(step === 7) {
-                        triggerEndingMagic();
-                        startEndingMusicTransition();
-                    }
-                    createHeartBurst(step);
-                } else {
-                    el.classList.remove('active');
-                }
-            }
-        }
+    function updateProgressText(index) {
         const progressMap = {
-            1:'💔 بداية الحكاية',2:'🎶 أنين الذكريات',3:'🕯️ اللي ساكن جواك',4:'📏 ألم المسافات',5:'🔥 نار الشوق',6:'📜 كلام من القلب',7:'♾️ حب لا يموت'
+            0:'💔 بداية الحكاية',
+            1:'🎶 أنين الذكريات',
+            2:'🕯️ اللي ساكن جواك',
+            3:'📏 ألم المسافات',
+            4:'🔥 نار الشوق',
+            5:'📜 كلام من القلب',
+            6:'♾️ حب لا يموت'
         };
-        document.getElementById('progress').innerHTML = progressMap[step] || '💔 رحلة حزينة';
-        currentStep = step;
+        document.getElementById('progress').innerHTML = progressMap[index] || '💔 رحلة حزينة';
     }
 
-    function nextStep() {
-        if(currentStep < 7) {
-            showStep(currentStep + 1);
+    function nextScreen() {
+        if (currentIndex < screens.length - 1) {
+            scrollToScreen(currentIndex + 1);
         }
     }
 
+    function triggerScreenEffects(index) {
+        // صفحة الكلمات: تشغيل الأنيميشن
+        if (index === 1) {
+            startLyricsAnimation();
+        }
+        // صفحة البعد: تشغيل تأثير التقارب
+        if (index === 3) {
+            startDistanceAnimation();
+        }
+        // صفحة الشوق: تفعيل المؤثرات
+        if (index === 4) {
+            startShoqEffects();
+        }
+        // صفحة النهاية: تفعيل السحر والموسيقى
+        if (index === 6) {
+            triggerEndingMagic();
+            startEndingMusicTransition();
+        }
+        // إضافة قلوب عائمة عند الانتقال
+        createHeartBurst(3);
+    }
+
+    // التأثيرات الخاصة
+    let lyricsAnimationStarted = false;
     function startLyricsAnimation() {
+        if (lyricsAnimationStarted) return;
+        lyricsAnimationStarted = true;
         const lines = ['line1','line2','line3','line4'];
         let idx = 0;
         function showLine(){
@@ -700,7 +621,9 @@
         showLine();
     }
 
+    let distanceAnimPlaying = false;
     function startDistanceAnimation() {
+        if (distanceAnimPlaying) return;
         distanceAnimPlaying = true;
         const person2Div = document.getElementById('person2Emoji');
         const distanceTextDiv = document.getElementById('distanceText');
@@ -730,7 +653,10 @@
         setTimeout(shrinkDistance, 700);
     }
 
-    function startShoqEffects(){
+    let shoqEffectsActive = false;
+    function startShoqEffects() {
+        if (shoqEffectsActive) return;
+        shoqEffectsActive = true;
         const slider = document.getElementById('shoqSlider');
         const valSpan = document.getElementById('shoqValue');
         const updateShoq = () => {
@@ -741,11 +667,123 @@
         };
         slider.addEventListener('input', updateShoq);
         updateShoq();
-        setInterval(()=>{
-            if(document.getElementById('screen5').classList.contains('active')) createHeartBurst(1);
+        const interval = setInterval(()=>{
+            const activeScreen = screens[currentIndex];
+            if(activeScreen && activeScreen.classList.contains('shoq-screen')) {
+                createHeartBurst(1);
+            } else {
+                clearInterval(interval);
+            }
         }, 1700);
     }
 
+    let endingMagicActive = false;
+    function triggerEndingMagic() {
+        if(endingMagicActive) return;
+        endingMagicActive = true;
+        const endingScr = document.getElementById('screen7');
+        let angle = 0;
+        const interval = setInterval(() => {
+            if(currentIndex === 6 && endingScr) {
+                angle = (angle + 2) % 360;
+                endingScr.style.background = `radial-gradient(circle at 40% 50%, hsl(${angle}, 65%, 6%), #0a0000)`;
+                if(Math.random() > 0.7) createHeartBurst(2);
+                if(Math.random() > 0.85){
+                    const extraTear = document.createElement('div');
+                    extraTear.className = 'tear-drop';
+                    extraTear.style.left = Math.random() * window.innerWidth + 'px';
+                    extraTear.style.animationDuration = "1.4s";
+                    document.body.appendChild(extraTear);
+                    setTimeout(()=>extraTear.remove(), 2000);
+                }
+            } else {
+                clearInterval(interval);
+            }
+        }, 130);
+    }
+
+    // متغيرات الموسيقى والبيانات
+    const journeyMusic = new Audio('WhatsApp Audio 2026-04-25 at 12.56.59 AM.mpeg');
+    journeyMusic.loop = true;
+    journeyMusic.volume = 0.32;
+    const endingMusic = new Audio('WhatsApp Audio 2026-04-25 at 12.59.41 AM.mpeg');
+    endingMusic.loop = true;
+    endingMusic.volume = 0.0;
+    let musicEnabled = true;
+    let userName = '';
+    let endingStarted = false;
+
+    function startJourneyMusic() {
+        if(musicEnabled && journeyMusic.paused) {
+            journeyMusic.play().catch(e => console.log('انتظر التفاعل'));
+        }
+    }
+    
+    function startEndingMusicTransition() {
+        if(!musicEnabled || endingStarted) return;
+        endingStarted = true;
+        let fadeOutInterval = setInterval(() => {
+            if(journeyMusic.volume > 0.05) {
+                journeyMusic.volume = Math.max(0, journeyMusic.volume - 0.03);
+            } else {
+                journeyMusic.pause();
+                journeyMusic.volume = 0.32;
+                clearInterval(fadeOutInterval);
+            }
+        }, 150);
+        endingMusic.volume = 0;
+        endingMusic.play().catch(e => console.log);
+        let fadeInInterval = setInterval(() => {
+            if(endingMusic.volume < 0.42) {
+                endingMusic.volume = Math.min(0.42, endingMusic.volume + 0.04);
+            } else {
+                clearInterval(fadeInInterval);
+            }
+        }, 120);
+    }
+
+    function stopAllMusic() {
+        journeyMusic.pause();
+        endingMusic.pause();
+        journeyMusic.volume = 0.32;
+        endingMusic.volume = 0;
+        endingStarted = false;
+    }
+
+    // إنشاء الدموع والقلوب
+    function createTears() {
+        setInterval(() => {
+            if (document.body.contains(document.querySelector('.screen'))) {
+                for(let i=0;i<2;i++){
+                    const tear = document.createElement('div');
+                    tear.className = 'tear-drop';
+                    tear.style.left = Math.random() * window.innerWidth + 'px';
+                    tear.style.animationDuration = Math.random() * 2.5 + 1.2 + 's';
+                    tear.style.opacity = Math.random() * 0.6 + 0.2;
+                    tear.style.width = (Math.random() * 2 + 1) + 'px';
+                    document.body.appendChild(tear);
+                    setTimeout(() => tear.remove(), 4000);
+                }
+            }
+        }, 500);
+    }
+
+    function createHeartBurst(count=1){
+        for(let i=0;i<count;i++){
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            const hearts = ['❤️', '💔', '💕', '💗', '💖', '💝', '💓', '🫀', '❤️‍🔥', '💘'];
+            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.fontSize = (Math.random() * 25 + 18) + 'px';
+            heart.style.animationDuration = Math.random() * 4 + 2.8 + 's';
+            heart.style.filter = `drop-shadow(0 0 8px rgba(255,80,80,0.7))`;
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4800);
+        }
+    }
+
+    // إعدادات البطاقة
     function setupCardGenerator() {
         const generateBtn = document.getElementById('generateCardBtn');
         const next6Btn = document.getElementById('nextBtn6');
@@ -772,37 +810,14 @@
         };
     }
 
-    let endingInterval;
-    function triggerEndingMagic() {
-        const endingScr = document.getElementById('screen7');
-        let angle = 0;
-        if(endingInterval) clearInterval(endingInterval);
-        endingInterval = setInterval(() => {
-            if(document.getElementById('screen7').classList.contains('active')) {
-                angle = (angle + 2) % 360;
-                endingScr.style.background = `radial-gradient(circle at 40% 50%, hsl(${angle}, 65%, 6%), #0a0000)`;
-                if(Math.random() > 0.7) createHeartBurst(2);
-                if(Math.random() > 0.85){
-                    const extraTear = document.createElement('div');
-                    extraTear.className = 'tear-drop';
-                    extraTear.style.left = Math.random() * window.innerWidth + 'px';
-                    extraTear.style.animationDuration = "1.4s";
-                    document.body.appendChild(extraTear);
-                    setTimeout(()=>extraTear.remove(), 2000);
-                }
-            } else {
-                clearInterval(endingInterval);
-            }
-        }, 130);
-    }
-
+    // إعدادات الموسيقى والتحكم
     function setupMusic(){
         const toggle = document.getElementById('musicToggle');
         toggle.onclick = () => {
             musicEnabled = !musicEnabled;
             if(musicEnabled){
-                if(currentStep < 7) journeyMusic.play().catch(e=>null);
-                if(currentStep === 7 && !endingMusic.paused) endingMusic.volume = 0.4;
+                if(currentIndex < 6) journeyMusic.play().catch(e=>null);
+                if(currentIndex === 6 && endingMusic.paused) endingMusic.volume = 0.4;
                 toggle.innerHTML = '🎵 حنين وذكريات';
             } else {
                 journeyMusic.pause();
@@ -816,24 +831,53 @@
         });
     }
 
-    document.getElementById('startBtn').onclick = () => { showStep(2); createHeartBurst(8); };
-    document.getElementById('nextBtn2').onclick = () => nextStep();
+    // ربط الأزرار
+    document.getElementById('startBtn').onclick = () => { scrollToScreen(1); createHeartBurst(8); };
+    document.getElementById('nextBtn2').onclick = () => nextScreen();
     document.getElementById('nextBtn3').onclick = () => {
         userName = document.getElementById('personName').value.trim();
         if(!userName) userName = "نور الروح";
-        nextStep();
+        nextScreen();
         createHeartBurst(5);
     };
-    document.getElementById('nextBtn4').onclick = () => nextStep();
-    document.getElementById('nextBtn5').onclick = () => nextStep();
-    document.getElementById('nextBtn6').onclick = () => nextStep();
+    document.getElementById('nextBtn4').onclick = () => nextScreen();
+    document.getElementById('nextBtn5').onclick = () => nextScreen();
+    document.getElementById('nextBtn6').onclick = () => nextScreen();
     document.getElementById('restartBtn').onclick = () => window.location.reload();
+
+    // منع التمرير العشوائي أثناء الانتقال (اختياري)
+    let isScrolling = false;
+    window.addEventListener('wheel', (e) => {
+        if(isTransitioning) {
+            e.preventDefault();
+            return false;
+        }
+    }, { passive: false });
+
+    // مراقبة التمرير لتحديث الفهرس الحالي
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting && !isTransitioning) {
+                const index = Array.from(screens).indexOf(entry.target);
+                if(index !== -1 && index !== currentIndex) {
+                    currentIndex = index;
+                    updateProgressText(currentIndex);
+                    triggerScreenEffects(currentIndex);
+                }
+            }
+        });
+    }, { threshold: 0.5 });
+
+    screens.forEach(screen => observer.observe(screen));
+
+    // بدء التشغيل
+    createTears();
     setupCardGenerator();
     setupMusic();
-
-    setInterval(()=>{
-        if(currentStep >= 3 && Math.random()>0.65) createHeartBurst(1);
-    }, 1500);
+    createHeartBurst(5);
+    setTimeout(() => {
+        scrollToScreen(0);
+    }, 100);
 </script>
 </body>
 </html>
