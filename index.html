@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>شايفك رغم البعد | حكاية قلب لا تنسى</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         * {
@@ -20,19 +20,34 @@
             background: #000;
             overflow-x: hidden;
             min-height: 100vh;
-            /* منع التمرير غير المرغوب فيه أثناء الانتقال */
-            position: relative;
+            color: #d1d1d1;
         }
 
-        /* حاوية الصفحات مع تمرير سلس عمودي */
+        /* تأثير ضبابي عام يمثل الحزن */
+        .sad-mist {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(ellipse at center, rgba(10, 10, 15, 0.4) 0%, rgba(0, 0, 0, 0.85) 100%);
+            z-index: 5;
+            animation: mistBreathe 8s infinite alternate;
+        }
+
+        @keyframes mistBreathe {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
         .screens-container {
             position: relative;
             width: 100%;
             min-height: 100vh;
-            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* كل صفحة تأخذ ارتفاع كامل الشاشة مع تمرير محتوى داخلي آمن */
         .screen {
             width: 100%;
             min-height: 100vh;
@@ -41,843 +56,496 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow-y: auto;
-            overflow-x: hidden;
             padding: 80px 20px;
-            /* إضافة مسافة أمان للمحتوى */
-            scrollbar-width: thin;
+            overflow: hidden;
         }
 
-        /* تخصيص شريط التمرير */
-        .screen::-webkit-scrollbar {
-            width: 4px;
-        }
-        .screen::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.05);
-        }
-        .screen::-webkit-scrollbar-thumb {
-            background: rgba(255,100,100,0.4);
-            border-radius: 10px;
-        }
-
-        /* حاوية المحتوى لتوسيط مرن */
         .content-container {
             width: 100%;
             max-width: 650px;
             margin: 0 auto;
-            padding: 20px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            z-index: 10;
         }
 
-        /* خلفيات الصفحات */
-        .start-screen { background: radial-gradient(circle at 30% 40%, #0a0a1a, #000000); }
-        .lyrics-screen { background: linear-gradient(135deg, #0a0005, #000000); }
-        .name-screen { background: linear-gradient(180deg, #050005, #0a0515); }
-        .distance-screen { background: radial-gradient(ellipse at center, #0a0315, #000000); }
-        .shoq-screen { background: linear-gradient(135deg, #0a0005, #1a0005); }
-        .message-screen { background: linear-gradient(135deg, #0a0310, #000000); }
-        .ending-screen { background: radial-gradient(circle at center, #1a0005, #000000); position: relative; overflow: hidden; }
+        /* خلفيات مشحونة بالعاطفة */
+        .start-screen { background: radial-gradient(circle at 50% 40%, #14050a, #000000); }
+        .lyrics-screen { background: linear-gradient(180deg, #050002, #0f0205, #000000); }
+        .name-screen { background: radial-gradient(circle at center, #0a0510, #000000); }
+        .distance-screen { background: linear-gradient(to bottom, #000000, #1a0505, #000000); }
+        .shoq-screen { background: radial-gradient(ellipse at bottom, #300005, #000000); }
+        .message-screen { background: linear-gradient(135deg, #080205, #000000); }
+        .ending-screen { background: radial-gradient(circle at center, #0a0000, #000000); }
 
-        /* ديكورات الصفحات */
-        .start-screen::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 8px);
-            pointer-events: none;
-        }
-        .lyrics-screen::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.4) 0px, rgba(0,0,0,0.4) 1px, transparent 1px, transparent 4px);
-            pointer-events: none;
-        }
-        .ending-screen::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: repeating-radial-gradient(circle at 20% 30%, rgba(255,80,100,0.03) 0px, rgba(255,80,100,0.03) 1px, transparent 1px, transparent 8px);
-            animation: slowDrift 20s linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes slowDrift {
-            0% { transform: translate(0,0);}
-            100% { transform: translate(-10%, -10%);}
-        }
-
-        /* النصوص والعناصر */
+        /* نصوص تنبض بالألم */
         .quote {
-            font-size: clamp(1.3rem, 6vw, 2rem);
-            color: rgba(255,245,245,0.85);
+            font-size: clamp(1.4rem, 6vw, 2.2rem);
+            color: rgba(255, 230, 230, 0.7);
             text-align: center;
-            line-height: 1.7;
+            line-height: 1.8;
             margin-bottom: 40px;
-            animation: sadPulse 2s infinite alternate;
-            font-weight: 500;
-            position: relative;
-            z-index: 2;
-            padding: 0 15px;
+            animation: heartbreakPulse 4s infinite alternate;
+            font-weight: 400;
+            text-shadow: 0 0 10px rgba(150, 0, 20, 0.5);
         }
 
-        @keyframes sadPulse {
-            0% { opacity: 0.6; text-shadow: 0 0 5px rgba(255,100,100,0.3);}
-            100% { opacity: 1; text-shadow: 0 0 20px rgba(255,80,120,0.7);}
+        @keyframes heartbreakPulse {
+            0% { opacity: 0.5; transform: scale(0.98); text-shadow: 0 0 5px rgba(255, 50, 50, 0.2); }
+            100% { opacity: 0.9; transform: scale(1); text-shadow: 0 0 20px rgba(200, 0, 0, 0.6); }
         }
 
+        /* كلمات الأغنية كأنها تظهر من العدم */
         .lyric-line {
-            font-size: clamp(1.2rem, 5vw, 2rem);
-            color: rgba(255,240,240,0.9);
-            margin: 30px 0;
+            font-size: clamp(1.3rem, 5vw, 2rem);
+            color: rgba(220, 200, 200, 0.8);
+            margin: 35px 0;
             opacity: 0;
-            filter: blur(15px);
-            transform: translateY(30px) scale(0.8);
-            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            font-weight: 600;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
-            position: relative;
-            z-index: 2;
-            padding: 0 10px;
+            filter: blur(20px);
+            transform: translateY(20px);
+            transition: all 2s cubic-bezier(0.25, 1, 0.5, 1);
+            font-weight: 300;
             text-align: center;
         }
 
         .lyric-line.visible {
             opacity: 1;
             filter: blur(0);
-            transform: translateY(0) scale(1);
-            text-shadow: 0 0 30px rgba(255,80,100,0.7);
+            transform: translateY(0);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
 
         .question {
             font-size: clamp(1.2rem, 5vw, 1.8rem);
-            color: rgba(255,240,240,0.9);
-            margin-bottom: 30px;
+            color: rgba(200, 180, 180, 0.8);
+            margin-bottom: 40px;
             text-align: center;
-            animation: softPulse 2s infinite;
-            padding: 0 15px;
+            line-height: 1.6;
+            animation: slowFade 3s infinite alternate;
         }
 
-        @keyframes softPulse {
-            0% { opacity: 0.7; text-shadow: 0 0 0px; }
-            100% { opacity: 1; text-shadow: 0 0 15px rgba(255,150,150,0.5);}
+        @keyframes slowFade {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
         }
 
-        .name-input {
-            background: rgba(255,255,255,0.03);
+        /* حقول إدخال داكنة وحزينة */
+        .name-input, .message-input {
+            background: transparent;
             border: none;
-            border-bottom: 2px solid rgba(255,150,150,0.4);
-            color: white;
-            font-size: clamp(1.1rem, 4.5vw, 1.5rem);
-            padding: 10px 15px;
+            border-bottom: 1px solid rgba(150, 50, 50, 0.3);
+            color: #fff;
+            font-size: clamp(1.2rem, 4.5vw, 1.5rem);
+            padding: 15px;
             width: 90%;
             max-width: 400px;
             text-align: center;
             font-family: 'Cairo', sans-serif;
-            transition: all 0.3s;
-        }
-        .name-input:focus {
-            border-bottom-color: rgba(255,100,100,0.8);
-            outline: none;
+            transition: all 0.5s;
+            box-shadow: 0 10px 20px -10px rgba(150,0,0,0.1) inset;
         }
 
+        .message-input {
+            border: 1px solid rgba(150, 50, 50, 0.2);
+            border-radius: 10px;
+            text-align: right;
+            background: rgba(20, 0, 5, 0.4);
+            min-height: 120px;
+        }
+
+        .name-input:focus, .message-input:focus {
+            border-color: rgba(200, 50, 50, 0.8);
+            outline: none;
+            box-shadow: 0 10px 30px -10px rgba(200,0,0,0.3) inset;
+        }
+
+        /* تأثير المسافة بين الشخصين */
         .people-visual {
             position: relative;
-            height: clamp(280px, 50vh, 400px);
+            height: clamp(200px, 40vh, 300px);
             width: 100%;
             max-width: 500px;
             margin: 20px auto;
+            border-bottom: 1px dashed rgba(100, 30, 30, 0.3);
         }
 
         .person {
             position: absolute;
-            width: clamp(70px, 20vw, 100px);
-            height: clamp(70px, 20vw, 100px);
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(2rem, 7vw, 3rem);
-            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            filter: drop-shadow(0 0 20px rgba(255,80,80,0.3));
-            background: radial-gradient(circle at 30% 30%, rgba(255,100,100,0.15), rgba(255,100,100,0.03));
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,150,150,0.2);
+            font-size: clamp(2.5rem, 8vw, 3.5rem);
+            transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.2));
+            opacity: 0.8;
         }
 
-        .person1 { left: 5%; top: 50%; transform: translateY(-50%); }
-        .person2 { right: 5%; top: 50%; transform: translateY(-50%); }
+        .person1 { left: 10%; bottom: -20px; }
+        .person2 { right: 10%; bottom: -20px; }
 
         .distance-text {
-            color: rgba(255,230,230,0.9);
-            font-size: clamp(1rem, 4vw, 1.3rem);
-            font-weight: 500;
-            line-height: 1.7;
+            color: rgba(200, 180, 180, 0.9);
+            font-size: clamp(1.1rem, 4vw, 1.4rem);
+            line-height: 1.8;
             text-align: center;
-            text-shadow: 0 0 5px rgba(0,0,0,0.5);
-            padding: 15px;
+            margin-top: 40px;
+            min-height: 80px;
         }
 
+        /* شريط الشوق المؤلم */
         .slider {
             width: 90%;
             max-width: 400px;
-            height: 8px;
+            height: 4px;
             -webkit-appearance: none;
-            background: linear-gradient(90deg, #aa3333, #ff5555, #aa3333);
+            background: rgba(50, 10, 10, 0.5);
             border-radius: 10px;
             outline: none;
-            margin: 20px auto;
+            margin: 30px auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8) inset;
         }
 
         .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: clamp(28px, 8vw, 34px);
-            height: clamp(28px, 8vw, 34px);
-            background: radial-gradient(circle, #ff5555, #aa2222);
+            width: 25px;
+            height: 25px;
+            background: #8b0000;
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 0 20px #ff4444;
+            box-shadow: 0 0 20px #ff0000, 0 0 40px #8b0000;
+            transition: transform 0.2s;
         }
+
+        .slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
         .shoq-value {
-            font-size: clamp(1.3rem, 5vw, 1.8rem);
-            color: #ffbbbb;
-            margin-top: 20px;
-            font-weight: bold;
+            font-size: clamp(1.4rem, 5vw, 2rem);
+            color: #ff8888;
+            margin-top: 10px;
+            font-weight: 300;
+            text-shadow: 0 0 10px rgba(255,0,0,0.4);
         }
 
-        .message-input {
-            width: 95%;
-            max-width: 480px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,150,150,0.3);
-            color: white;
-            padding: 15px;
-            font-size: clamp(0.9rem, 3.5vw, 1rem);
+        /* الأزرار الشفافة كأنها زجاج مكسور */
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(150, 50, 50, 0.3);
+            color: rgba(200, 180, 180, 0.8);
+            padding: 12px 35px;
+            font-size: 1.1rem;
             font-family: 'Cairo', sans-serif;
-            border-radius: 18px;
-            transition: all 0.3s;
-            resize: vertical;
-        }
-        .message-input:focus {
-            border-color: rgba(255,100,100,0.6);
-            outline: none;
-            background: rgba(255,255,255,0.08);
-        }
-
-        .card-preview {
-            background: linear-gradient(135deg, rgba(255,100,100,0.15), rgba(100,100,255,0.15));
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255,200,200,0.3);
-            border-radius: 28px;
-            padding: 20px;
-            margin: 20px;
-            display: none;
-            animation: cardAppear 0.8s ease forwards;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.6);
-            width: calc(100% - 40px);
-            max-width: 500px;
-        }
-        .card-preview.show { display: block; }
-
-        @keyframes cardAppear {
-            from { opacity: 0; transform: scale(0.8) translateY(40px);}
-            to { opacity: 1; transform: scale(1) translateY(0);}
-        }
-
-        .final-quote {
-            font-size: clamp(1.4rem, 6vw, 2.3rem);
-            color: white;
-            text-align: center;
-            line-height: 1.6;
-            animation: finalPulseIntense 1.8s infinite ease-in-out;
-            text-shadow: 0 0 30px rgba(255,80,120,0.8);
-            font-weight: 800;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.4s ease;
+            margin-top: 40px;
             letter-spacing: 1px;
-            position: relative;
-            z-index: 2;
-            padding: 20px;
+            backdrop-filter: blur(5px);
         }
 
-        @keyframes finalPulseIntense {
-            0% { transform: scale(1); text-shadow: 0 0 20px #ff4466; opacity: 0.9;}
-            50% { transform: scale(1.05); text-shadow: 0 0 50px #ff6688; opacity: 1;}
-            100% { transform: scale(1); text-shadow: 0 0 20px #ff4466; opacity: 0.9;}
+        .btn-ghost:hover {
+            background: rgba(100, 0, 0, 0.1);
+            border-color: rgba(200, 50, 50, 0.6);
+            color: #fff;
+            text-shadow: 0 0 8px rgba(255,100,100,0.5);
         }
 
-        /* أزرار متجاوبة */
-        .restart-btn, .next-btn, .start-btn {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,150,150,0.4);
-            color: rgba(255,240,240,0.9);
-            padding: 12px 28px;
-            font-size: clamp(0.85rem, 3.5vw, 1rem);
-            font-family: 'Cairo', sans-serif;
-            cursor: pointer;
-            border-radius: 60px;
-            transition: all 0.3s;
-            backdrop-filter: blur(8px);
-            margin-top: 25px;
-            min-width: 160px;
-            text-align: center;
-        }
-        .restart-btn:hover, .next-btn:hover, .start-btn:hover {
-            background: rgba(255,100,100,0.2);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255,80,80,0.25);
-            border-color: rgba(255,180,180,0.6);
-        }
-
-        /* أزرار التحكم السفلية */
-        .music-control, .progress-indicator {
-            position: fixed;
-            bottom: 15px;
-            z-index: 999;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,150,150,0.25);
-            color: rgba(255,240,240,0.8);
-            padding: 5px 12px;
-            border-radius: 40px;
-            font-size: clamp(0.65rem, 2.5vw, 0.75rem);
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .music-control { right: 10px; }
-        .progress-indicator { left: 10px; }
-
-        /* دموع حزينة متجاوبة */
+        /* دموع حزينة وواقعية أكثر */
         .tear-drop {
             position: fixed;
-            width: 2px;
-            height: 14px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(100,150,255,0.3), rgba(255,255,255,0));
-            top: -10px;
+            width: 1.5px;
+            height: 25px;
+            background: linear-gradient(180deg, transparent, rgba(200, 220, 255, 0.4), transparent);
+            top: -30px;
             animation: fall linear infinite;
             pointer-events: none;
             z-index: 9999;
+            transform: rotate(5deg);
+            filter: blur(1px);
         }
 
         @keyframes fall {
-            to {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
+            0% { transform: translateY(-10vh) rotate(5deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(5deg); opacity: 0; }
         }
 
-        .floating-heart {
+        /* رماد الذكريات المتطاير */
+        .ash-particle {
             position: fixed;
-            font-size: 20px;
+            background: rgba(150, 100, 100, 0.3);
+            border-radius: 50%;
             pointer-events: none;
-            z-index: 9999;
-            animation: floatUp 4s ease-out forwards;
-            filter: drop-shadow(0 0 8px rgba(255,80,80,0.8));
+            z-index: 9998;
+            animation: floatAsh linear forwards;
+            filter: blur(2px);
         }
 
-        @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) scale(0) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) scale(1.3) rotate(25deg);
-                opacity: 0;
-            }
+        @keyframes floatAsh {
+            0% { transform: translateY(100vh) translateX(0) scale(1); opacity: 0; }
+            20% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) translateX(50px) scale(0.5); opacity: 0; }
         }
 
-        /* تحسينات للأجهزة الصغيرة جداً */
-        @media (max-width: 480px) {
-            .screen {
-                padding: 60px 15px;
-            }
-            .person {
-                width: 65px;
-                height: 65px;
-                font-size: 2rem;
-            }
-            .person span {
-                font-size: 10px;
-            }
-            .next-btn, .start-btn, .restart-btn {
-                padding: 10px 20px;
-                min-width: 130px;
-            }
-            .lyric-line {
-                margin: 20px 0;
-            }
+        .final-quote {
+            font-size: clamp(1.6rem, 6vw, 2.5rem);
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            line-height: 1.8;
+            animation: heartbreakPulse 3s infinite alternate;
+            font-weight: 300;
         }
 
-        /* للحواسيب الكبيرة */
-        @media (min-width: 1200px) {
-            .content-container {
-                max-width: 750px;
-            }
-            .person {
-                width: 110px;
-                height: 110px;
-                font-size: 3.2rem;
-            }
+        .card-preview {
+            background: rgba(15, 0, 5, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 20, 20, 0.4);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
+
+        .card-preview.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* أزرار التحكم بالصوت ثابتة وشفافة */
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .controls > * {
+            pointer-events: auto;
+            background: transparent;
+            border: none;
+            color: rgba(150, 150, 150, 0.6);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .controls > *:hover { color: rgba(255, 200, 200, 0.9); }
+
     </style>
 </head>
 <body>
 
-<div class="sad-mist" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; background:radial-gradient(ellipse at center, rgba(0,0,30,0.15) 0%, rgba(0,0,0,0.4) 100%); z-index:5;"></div>
-<div class="progress-indicator" id="progress">💔 حكاية قلب حزين</div>
-<button class="music-control" id="musicToggle">🎵 حنين وذكريات</button>
+<div class="sad-mist"></div>
 
-<!-- حاوية الصفحات المتتالية عمودياً -->
+<div class="controls">
+    <div id="progress">💔 جرح القلب</div>
+    <button id="musicToggle">🎵 تشغيل الأنين</button>
+</div>
+
 <div class="screens-container" id="screensContainer">
-    <!-- الصفحة 1: نداء الحزن -->
-    <div class="screen start-screen" id="screen1">
+    <div class="screen start-screen">
         <div class="content-container">
             <div class="quote">
-                💔<br>
                 "سألت نفسي ألف مرة...<br>
-                ليه الحب الجميل لازم يتبهدل؟<br>
-                ليه القلوب الطيبة بتتعب كده؟"<br>
-                <span style="font-size: 0.9rem; opacity: 0.7;">أنا عارف إنك تعبان... تعالي نفهم سوا</span>
+                ليه القلوب الطيبة دايماً بتدفع التمن؟<br>
+                وليه الروح بتفضل متعلقة بحد مبقاش موجود؟"
             </div>
-            <button class="start-btn" id="startBtn">🕯️ افتح قلبك معايا 🕯️</button>
+            <button class="btn-ghost" onclick="nextScreen()">.. افتح </button>
         </div>
     </div>
 
-    <!-- الصفحة 2: كلمات -->
-    <div class="screen lyrics-screen" id="screen2">
-        <div class="lyrics-container" style="width:100%; max-width:600px; margin:0 auto; text-align:center; padding:20px;">
-            <div class="lyric-line" id="line1">"تايه في الأماكن اللي كنا فيها... بتوه أكتر"</div>
-            <div class="lyric-line" id="line2">"ناس بتمشي وانت ساكن جوة القلب... مش قادر تطلع"</div>
-            <div class="lyric-line" id="line3">"أه بعيد عن عيني لكن... شايفك بعيون الروح"</div>
-            <div class="lyric-line" id="line4">"لسه شايفك عندي... أغلى من كل الدنيا"</div>
-            <button class="next-btn" id="nextBtn2">💔 كمّل معايا... أنا جنبك</button>
+    <div class="screen lyrics-screen">
+        <div class="content-container">
+            <div class="lyric-line" id="line1">"تايه في الأماكن.. وكل ركن بيفكرني بيك"</div>
+            <div class="lyric-line" id="line2">"ناس بتمشي وتيجي.. وانت ثابت جوة الوريد"</div>
+            <div class="lyric-line" id="line3">"عيني مش شيفاك.. بس روحي حاسه بيك"</div>
+            <div class="lyric-line" id="line4">"لسه غالي.. ولسه الوجع بيكبر معاك"</div>
+            <button class="btn-ghost" id="btnTo3" style="opacity:0; transition: opacity 2s;" onclick="nextScreen()">مكمل معاك في الوجع</button>
         </div>
     </div>
 
-    <!-- الصفحة 3: الاسم -->
-    <div class="screen name-screen" id="screen3">
+    <div class="screen name-screen">
         <div class="content-container">
             <div class="question">
-                💭<br>
-                خليني أقرب ليك شوية...<br>مين الشخص اللي لسه عايش جوا قلبك؟
+                عارف إنه لسه ساكن جواك..<br>مين اللي سرق النوم من عينك؟
             </div>
-            <input type="text" class="name-input" id="personName" placeholder="اكتب اسمه/اسمها بهدوء..." autocomplete="off">
-            <button class="next-btn" id="nextBtn3" style="margin-top: 35px;">🤍 فاهم... أهو أكيد فاكرك 🤍</button>
+            <input type="text" class="name-input" id="personName" placeholder="اكتب اسمه بهدوء..." autocomplete="off">
+            <button class="btn-ghost" onclick="saveNameAndNext()">أيوة.. هو ده وجعي</button>
         </div>
     </div>
 
-    <!-- الصفحة 4: البعد -->
-    <div class="screen distance-screen" id="screen4">
+    <div class="screen distance-screen">
         <div class="content-container">
             <div class="people-visual">
-                <div class="person person1">👤<br><span style="font-size: 12px;">أنا اللي بحب</span></div>
-                <div class="person person2" id="person2Emoji">💔<br><span style="font-size: 12px;" id="personNameDisplay">?</span></div>
+                <div class="person person1">👤</div>
+                <div class="person person2" id="person2Emoji">💔</div>
             </div>
-            <div class="distance-text" id="distanceText"></div>
-            <button class="next-btn" id="nextBtn4" style="margin-top: 15px;">📏 قد إيه البعد موجع؟</button>
+            <div class="distance-text" id="distanceText">المسافة بعيدة.. بس القلب أقرب من حبل الوريد</div>
+            <button class="btn-ghost" onclick="nextScreen()">البعد بيموتني</button>
         </div>
     </div>
 
-    <!-- الصفحة 5: الشوق -->
-    <div class="screen shoq-screen" id="screen5">
+    <div class="screen shoq-screen">
         <div class="content-container">
             <div class="question">
-                🔥<br>
-                خليني أحس بيك أكتر...<br>نار الشوق وصلت لفين جواك؟
+                النار اللي قايدة جواك..<br>وصلت لحد فين؟
             </div>
-            <input type="range" class="slider" id="shoqSlider" min="0" max="100" value="96">
-            <div class="shoq-value" id="shoqValue">96% 😭💔</div>
-            <button class="next-btn" id="nextBtn5" style="margin-top: 30px;">🌋 أنا حاسس بيك... صدقني</button>
+            <input type="range" class="slider" id="shoqSlider" min="0" max="100" value="90">
+            <div class="shoq-value" id="shoqValue">90% 💔</div>
+            <button class="btn-ghost" onclick="nextScreen()">مش قادر أتحمل أكتر</button>
         </div>
     </div>
 
-    <!-- الصفحة 6: الرسالة -->
-    <div class="screen message-screen" id="screen6">
+    <div class="screen message-screen">
         <div class="content-container">
             <div class="question">
-                💌<br>
-                دلوقتي... إكتب كل اللي جواك<br>لو سمعك دلوقتي، تحب تقول له إيه؟
+                لو صوته مسموع دلوقتي..<br>وقلبك يقدر يتكلم، هتقوله إيه؟
             </div>
-            <textarea class="message-input" id="userMessage" rows="4" placeholder="اكتب الكلام اللي محدش سألك عليه... أنا هنا عشانك... عشان أسمعك وافهمك..."></textarea>
-            <button class="next-btn" id="generateCardBtn">💫 خلي كلامك يتكتب في نور وذكرى 💫</button>
+            <textarea class="message-input" id="userMessage" placeholder="طلع كل الوجع هنا.. محدش هيحس بيك غير الكلمات..."></textarea>
+            <button class="btn-ghost" onclick="generateSadCard()">اكتب وجعي في سطور</button>
+
             <div class="card-preview" id="cardPreview">
-                <div id="cardContent" style="color: white; text-align: center;"></div>
-                <button id="shareBtn" class="next-btn" style="margin-top: 20px; background: rgba(255,100,100,0.25);">📤 شارك رسالتك</button>
+                <div id="cardContent" style="color: rgba(255,255,255,0.8); text-align: center; line-height: 2;"></div>
+                <button class="btn-ghost" style="width: 100%; border:none; border-top: 1px solid rgba(100,20,20,0.5); margin-top: 20px; border-radius: 0;" onclick="nextScreen()">خلاص.. تعبت</button>
             </div>
-            <button class="next-btn" id="nextBtn6" style="margin-top: 20px; display: none;">💞 خلصنا الرحلة</button>
         </div>
     </div>
 
-    <!-- الصفحة 7: النهاية -->
-    <div class="screen ending-screen" id="screen7">
+    <div class="screen ending-screen">
         <div class="content-container">
             <div class="final-quote">
                 "شايفك...<br>
-                مش بعيني... بشوفك بقلبي<br>
-                والحب الحقيقي... عمره ما بيموت"<br>
-                <span style="font-size: 0.9rem; display: block; margin-top: 20px; opacity: 0.9;">💔 أنا هفضل هنا... فاكرك في كل تفصيلة 💔</span>
+                مش بالعين اللي بتبكي<br>
+                بالقلب اللي هيفضل ينزف في غيابك"<br>
+                <span style="font-size: 1.2rem; display: block; margin-top: 40px; color: rgba(150,150,150,0.6);">ستبقى الذكرى الأجمل والأكثر إيلاماً.</span>
             </div>
-            <button class="restart-btn" id="restartBtn">🔄 ارجع أبدأ الحكاية من الأول</button>
         </div>
     </div>
 </div>
 
 <script>
-    // العناصر
     const screensContainer = document.getElementById('screensContainer');
-    const screens = document.querySelectorAll('.screen');
     let currentIndex = 0;
-    let isTransitioning = false;
-
-    // دالة التمرير إلى صفحة معينة (بالتمرير العمودي)
-    function scrollToScreen(index) {
-        if (isTransitioning) return;
-        if (index < 0 || index >= screens.length) return;
-        isTransitioning = true;
-        
-        const targetScreen = screens[index];
-        targetScreen.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
-        
-        // تحديث الحالة بعد الانتهاء من التمرير
-        setTimeout(() => {
-            currentIndex = index;
-            updateProgressText(currentIndex);
-            // تشغيل التأثيرات الخاصة بكل صفحة عند الوصول إليها
-            triggerScreenEffects(currentIndex);
-            isTransitioning = false;
-        }, 800);
-    }
-
-    function updateProgressText(index) {
-        const progressMap = {
-            0:'💔 بداية الحكاية',
-            1:'🎶 أنين الذكريات',
-            2:'🕯️ اللي ساكن جواك',
-            3:'📏 ألم المسافات',
-            4:'🔥 نار الشوق',
-            5:'📜 كلام من القلب',
-            6:'♾️ حب لا يموت'
-        };
-        document.getElementById('progress').innerHTML = progressMap[index] || '💔 رحلة حزينة';
-    }
+    let userName = '';
 
     function nextScreen() {
-        if (currentIndex < screens.length - 1) {
-            scrollToScreen(currentIndex + 1);
+        if (currentIndex < 6) {
+            currentIndex++;
+            screensContainer.style.transform = `translateY(-${currentIndex * 100}vh)`;
+            triggerScreenEffects(currentIndex);
+
+            const titles = ['💔 الغصة', '🎶 أنين', '👤 الساكن', '📏 المسافة', '🔥 الاحتراق', '📜 الوداع', '🥀 النهاية'];
+            document.getElementById('progress').innerText = titles[currentIndex];
+
+            // زيادة كثافة الدموع كلما تقدمنا
+            createAshes(currentIndex * 2);
         }
+    }
+
+    function saveNameAndNext() {
+        userName = document.getElementById('personName').value.trim() || 'الغائب الحاضر';
+        nextScreen();
     }
 
     function triggerScreenEffects(index) {
-        // صفحة الكلمات: تشغيل الأنيميشن
         if (index === 1) {
-            startLyricsAnimation();
+            const lines = ['line1', 'line2', 'line3', 'line4'];
+            lines.forEach((id, i) => {
+                setTimeout(() => {
+                    document.getElementById(id).classList.add('visible');
+                }, (i + 1) * 2000); // إظهار الكلمات ببطء شديد يثير الشجن
+            });
+            setTimeout(() => {
+                document.getElementById('btnTo3').style.opacity = '1';
+            }, 10000);
         }
-        // صفحة البعد: تشغيل تأثير التقارب
+
         if (index === 3) {
-            startDistanceAnimation();
-        }
-        // صفحة الشوق: تفعيل المؤثرات
-        if (index === 4) {
-            startShoqEffects();
-        }
-        // صفحة النهاية: تفعيل السحر والموسيقى
-        if (index === 6) {
-            triggerEndingMagic();
-            startEndingMusicTransition();
-        }
-        // إضافة قلوب عائمة عند الانتقال
-        createHeartBurst(3);
-    }
+            const distText = document.getElementById('distanceText');
+            let dist = 90;
+            const p2 = document.getElementById('person2Emoji');
 
-    // التأثيرات الخاصة
-    let lyricsAnimationStarted = false;
-    function startLyricsAnimation() {
-        if (lyricsAnimationStarted) return;
-        lyricsAnimationStarted = true;
-        const lines = ['line1','line2','line3','line4'];
-        let idx = 0;
-        function showLine(){
-            if(idx < lines.length){
-                const lineEl = document.getElementById(lines[idx]);
-                if(lineEl){
-                    lineEl.classList.add('visible');
-                    createHeartBurst(2);
-                    idx++;
-                    setTimeout(showLine, 2600);
-                } else showLine();
-            }
-        }
-        showLine();
-    }
-
-    let distanceAnimPlaying = false;
-    function startDistanceAnimation() {
-        if (distanceAnimPlaying) return;
-        distanceAnimPlaying = true;
-        const person2Div = document.getElementById('person2Emoji');
-        const distanceTextDiv = document.getElementById('distanceText');
-        const nameDisplaySpan = document.getElementById('personNameDisplay');
-        const theName = userName || 'الغالي(ة)';
-        nameDisplaySpan.innerText = theName;
-        distanceTextDiv.innerHTML = `💔 سألت نفسي ألف مرة... ليه المسافة كده؟ طب أنا شايفك يا ${theName}... شايفك قدامي`;
-        let distanceVal = 98;
-        function shrinkDistance(){
-            if(distanceVal > 0){
-                distanceVal -= 2.2;
-                const rightPercent = Math.max(0, distanceVal);
-                person2Div.style.right = rightPercent + '%';
-                if(rightPercent < 12){
-                    distanceTextDiv.innerHTML = `🤍 ${theName} بقيت جوة قلبي... مفيش بعد خلاص... الروح معاك 🤍`;
-                    if(Math.random()>0.5) createHeartBurst(2);
+            const shrink = setInterval(() => {
+                if (dist > 15) {
+                    dist -= 1;
+                    p2.style.right = dist + '%';
+                    distText.innerText = `حتى لو بيننا ${dist}% من الغياب.. روحك بتطوف حواليا يا ${userName}`;
                 } else {
-                    distanceTextDiv.innerHTML = `💔 باقي ${Math.floor(rightPercent)}% من المسافة... عيون قلبي شايفاك... بتقرب ليك`;
+                    clearInterval(shrink);
+                    distText.innerHTML = `المسافات كدبة.. أنت محفور جوايا.`;
                 }
-                if(distanceVal % 18 === 0) createHeartBurst(3);
-                setTimeout(shrinkDistance, 40);
-            } else {
-                distanceTextDiv.innerHTML = `"${theName}... أنا عارف إن البعد كبير، بس أنا شايفك. شايفك في كل حاجة. المهم إنك في قلبي" ❤️‍🩹`;
-                for(let i=0;i<12;i++) setTimeout(()=>createHeartBurst(1), i*130);
-            }
-        }
-        setTimeout(shrinkDistance, 700);
-    }
-
-    let shoqEffectsActive = false;
-    function startShoqEffects() {
-        if (shoqEffectsActive) return;
-        shoqEffectsActive = true;
-        const slider = document.getElementById('shoqSlider');
-        const valSpan = document.getElementById('shoqValue');
-        const updateShoq = () => {
-            let val = slider.value;
-            let emoji = val >= 95 ? '💔💔 نار بتاكل الروح' : val >=80 ? '😭🔥 شوق بيحرق' : val>=60 ? '💕💔 قلب مش قادر ينام' : val>=30 ? '💗 حنين بليل' : '💖 ذكرى حلوة';
-            valSpan.innerHTML = `${val}% ${emoji}`;
-            if(val > 70 && Math.random() > 0.7) createHeartBurst(1);
-        };
-        slider.addEventListener('input', updateShoq);
-        updateShoq();
-        const interval = setInterval(()=>{
-            const activeScreen = screens[currentIndex];
-            if(activeScreen && activeScreen.classList.contains('shoq-screen')) {
-                createHeartBurst(1);
-            } else {
-                clearInterval(interval);
-            }
-        }, 1700);
-    }
-
-    let endingMagicActive = false;
-    function triggerEndingMagic() {
-        if(endingMagicActive) return;
-        endingMagicActive = true;
-        const endingScr = document.getElementById('screen7');
-        let angle = 0;
-        const interval = setInterval(() => {
-            if(currentIndex === 6 && endingScr) {
-                angle = (angle + 2) % 360;
-                endingScr.style.background = `radial-gradient(circle at 40% 50%, hsl(${angle}, 65%, 6%), #0a0000)`;
-                if(Math.random() > 0.7) createHeartBurst(2);
-                if(Math.random() > 0.85){
-                    const extraTear = document.createElement('div');
-                    extraTear.className = 'tear-drop';
-                    extraTear.style.left = Math.random() * window.innerWidth + 'px';
-                    extraTear.style.animationDuration = "1.4s";
-                    document.body.appendChild(extraTear);
-                    setTimeout(()=>extraTear.remove(), 2000);
-                }
-            } else {
-                clearInterval(interval);
-            }
-        }, 130);
-    }
-
-    // متغيرات الموسيقى والبيانات
-    const journeyMusic = new Audio('WhatsApp Audio 2026-04-25 at 12.56.59 AM.mpeg');
-    journeyMusic.loop = true;
-    journeyMusic.volume = 0.32;
-    const endingMusic = new Audio('WhatsApp Audio 2026-04-25 at 12.59.41 AM.mpeg');
-    endingMusic.loop = true;
-    endingMusic.volume = 0.0;
-    let musicEnabled = true;
-    let userName = '';
-    let endingStarted = false;
-
-    function startJourneyMusic() {
-        if(musicEnabled && journeyMusic.paused) {
-            journeyMusic.play().catch(e => console.log('انتظر التفاعل'));
+            }, 100);
         }
     }
-    
-    function startEndingMusicTransition() {
-        if(!musicEnabled || endingStarted) return;
-        endingStarted = true;
-        let fadeOutInterval = setInterval(() => {
-            if(journeyMusic.volume > 0.05) {
-                journeyMusic.volume = Math.max(0, journeyMusic.volume - 0.03);
-            } else {
-                journeyMusic.pause();
-                journeyMusic.volume = 0.32;
-                clearInterval(fadeOutInterval);
-            }
-        }, 150);
-        endingMusic.volume = 0;
-        endingMusic.play().catch(e => console.log);
-        let fadeInInterval = setInterval(() => {
-            if(endingMusic.volume < 0.42) {
-                endingMusic.volume = Math.min(0.42, endingMusic.volume + 0.04);
-            } else {
-                clearInterval(fadeInInterval);
-            }
-        }, 120);
+
+    // تحديث شريط الشوق
+    const slider = document.getElementById('shoqSlider');
+    const valText = document.getElementById('shoqValue');
+    slider.addEventListener('input', (e) => {
+        let val = e.target.value;
+        let icon = val > 80 ? '🔥' : val > 50 ? '💔' : '🥀';
+        valText.innerText = `${val}% ${icon}`;
+    });
+
+    // توليد رسالة الوجع
+    function generateSadCard() {
+        const msg = document.getElementById('userMessage').value.trim() || "كل الكلام مات جوه صدري، مفيش غير سكوت بيوجع وتنهيدة بتكسر الضلوع.";
+        const card = document.getElementById('cardPreview');
+        const content = document.getElementById('cardContent');
+
+        content.innerHTML = `
+            <div style="font-size:1.5rem; margin-bottom:20px;">إلى ${userName}..</div>
+            <div style="font-style: italic;">"${msg}"</div>
+            <div style="margin-top:20px; font-size: 0.9rem; color: #888;">من قلب لم يتوقف عن النزيف</div>
+        `;
+        card.classList.add('show');
     }
 
-    function stopAllMusic() {
-        journeyMusic.pause();
-        endingMusic.pause();
-        journeyMusic.volume = 0.32;
-        endingMusic.volume = 0;
-        endingStarted = false;
-    }
-
-    // إنشاء الدموع والقلوب
+    // أمطار من الدموع والرماد
     function createTears() {
         setInterval(() => {
-            if (document.body.contains(document.querySelector('.screen'))) {
-                for(let i=0;i<2;i++){
-                    const tear = document.createElement('div');
-                    tear.className = 'tear-drop';
-                    tear.style.left = Math.random() * window.innerWidth + 'px';
-                    tear.style.animationDuration = Math.random() * 2.5 + 1.2 + 's';
-                    tear.style.opacity = Math.random() * 0.6 + 0.2;
-                    tear.style.width = (Math.random() * 2 + 1) + 'px';
-                    document.body.appendChild(tear);
-                    setTimeout(() => tear.remove(), 4000);
-                }
-            }
-        }, 500);
+            const tear = document.createElement('div');
+            tear.className = 'tear-drop';
+            tear.style.left = Math.random() * window.innerWidth + 'px';
+            tear.style.animationDuration = (Math.random() * 2 + 2) + 's'; // سقوط بطيء
+            tear.style.opacity = Math.random() * 0.5 + 0.1;
+            document.body.appendChild(tear);
+            setTimeout(() => tear.remove(), 4000);
+        }, 300);
     }
 
-    function createHeartBurst(count=1){
-        for(let i=0;i<count;i++){
-            const heart = document.createElement('div');
-            heart.className = 'floating-heart';
-            const hearts = ['❤️', '💔', '💕', '💗', '💖', '💝', '💓', '🫀', '❤️‍🔥', '💘'];
-            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
-            heart.style.left = Math.random() * window.innerWidth + 'px';
-            heart.style.fontSize = (Math.random() * 25 + 18) + 'px';
-            heart.style.animationDuration = Math.random() * 4 + 2.8 + 's';
-            heart.style.filter = `drop-shadow(0 0 8px rgba(255,80,80,0.7))`;
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 4800);
+    function createAshes(amount) {
+        for(let i=0; i<amount; i++) {
+            const ash = document.createElement('div');
+            ash.className = 'ash-particle';
+            ash.style.left = Math.random() * window.innerWidth + 'px';
+            ash.style.width = (Math.random() * 4 + 1) + 'px';
+            ash.style.height = ash.style.width;
+            ash.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            document.body.appendChild(ash);
+            setTimeout(() => ash.remove(), 10000);
         }
     }
 
-    // إعدادات البطاقة
-    function setupCardGenerator() {
-        const generateBtn = document.getElementById('generateCardBtn');
-        const next6Btn = document.getElementById('nextBtn6');
-        const shareBtn = document.getElementById('shareBtn');
-        const cardPreview = document.getElementById('cardPreview');
-        const cardContentDiv = document.getElementById('cardContent');
+    // تشغيل الموسيقى الوهمي (تعتمد على الملفات المحلية لديك)
+    let isMusicPlaying = false;
+    document.getElementById('musicToggle').addEventListener('click', function() {
+        isMusicPlaying = !isMusicPlaying;
+        this.innerText = isMusicPlaying ? '🔇 إيقاف الأنين' : '🎵 تشغيل الأنين';
+        // هنا يمكنك ربط الـ Audio Objects الخاصة بك كما كانت في الكود الأصلي
+    });
 
-        generateBtn.onclick = () => {
-            let message = document.getElementById('userMessage').value.trim();
-            if(message === "") message = "مش عارف أقول إيه، بس أنت معايا في كل خطوة... شايفك بعيون قلبي.";
-            const person = userName || 'حبيبي';
-            const shoqVal = document.getElementById('shoqSlider').value;
-            cardContentDiv.innerHTML = `<div style="padding:10px;"><span style="font-size:2rem;">💌</span><br><div style="font-size:1.3rem; margin:15px 0;">إلى ${person}</div><div style="font-size:1rem; line-height:1.8; border-right:2px solid rgba(255,200,200,0.5); padding-right:14px; margin:15px 0;">“${message}”</div><div style="font-size:0.9rem; background:rgba(0,0,0,0.5); border-radius:40px; padding:8px;">💔 شوقي ليك ${shoqVal}%</div><div style="margin-top:12px;">✨ رغم البعد.. أنت في الروح ✨</div></div>`;
-            cardPreview.classList.add('show');
-            next6Btn.style.display = 'inline-block';
-            createHeartBurst(8);
-        };
-        shareBtn.onclick = () => {
-            const textContent = document.getElementById('cardContent').innerText;
-            navigator.clipboard.writeText(textContent).then(()=>{
-                alert('❤️ تم حفظ رسالتك كذكرى خالدة!');
-                createHeartBurst(12);
-            });
-        };
-    }
-
-    // إعدادات الموسيقى والتحكم
-    function setupMusic(){
-        const toggle = document.getElementById('musicToggle');
-        toggle.onclick = () => {
-            musicEnabled = !musicEnabled;
-            if(musicEnabled){
-                if(currentIndex < 6) journeyMusic.play().catch(e=>null);
-                if(currentIndex === 6 && endingMusic.paused) endingMusic.volume = 0.4;
-                toggle.innerHTML = '🎵 حنين وذكريات';
-            } else {
-                journeyMusic.pause();
-                endingMusic.pause();
-                toggle.innerHTML = '🔇 صمت مؤلم';
-            }
-        };
-        document.body.addEventListener('click', function once(){
-            if(musicEnabled) startJourneyMusic();
-            document.body.removeEventListener('click', once);
-        });
-    }
-
-    // ربط الأزرار
-    document.getElementById('startBtn').onclick = () => { scrollToScreen(1); createHeartBurst(8); };
-    document.getElementById('nextBtn2').onclick = () => nextScreen();
-    document.getElementById('nextBtn3').onclick = () => {
-        userName = document.getElementById('personName').value.trim();
-        if(!userName) userName = "نور الروح";
-        nextScreen();
-        createHeartBurst(5);
-    };
-    document.getElementById('nextBtn4').onclick = () => nextScreen();
-    document.getElementById('nextBtn5').onclick = () => nextScreen();
-    document.getElementById('nextBtn6').onclick = () => nextScreen();
-    document.getElementById('restartBtn').onclick = () => window.location.reload();
-
-    // منع التمرير العشوائي أثناء الانتقال (اختياري)
-    let isScrolling = false;
-    window.addEventListener('wheel', (e) => {
-        if(isTransitioning) {
-            e.preventDefault();
-            return false;
-        }
-    }, { passive: false });
-
-    // مراقبة التمرير لتحديث الفهرس الحالي
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if(entry.isIntersecting && !isTransitioning) {
-                const index = Array.from(screens).indexOf(entry.target);
-                if(index !== -1 && index !== currentIndex) {
-                    currentIndex = index;
-                    updateProgressText(currentIndex);
-                    triggerScreenEffects(currentIndex);
-                }
-            }
-        });
-    }, { threshold: 0.5 });
-
-    screens.forEach(screen => observer.observe(screen));
-
-    // بدء التشغيل
+    // تهيئة الصفحة
     createTears();
-    setupCardGenerator();
-    setupMusic();
-    createHeartBurst(5);
-    setTimeout(() => {
-        scrollToScreen(0);
-    }, 100);
 </script>
 </body>
 </html>
